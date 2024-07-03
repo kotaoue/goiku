@@ -18,6 +18,7 @@ func main() {
 }
 
 func Main() error {
+	// TODO: I want auto-generation mode.
 	input := flag.String("input", "うどん食べ ステーキ食べて 寿司食べる", "string to be change the vertically")
 	flag.Parse()
 
