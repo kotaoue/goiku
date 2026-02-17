@@ -27,22 +27,22 @@ func Main() error {
 
 	// 縦書きに変換
 	for i := 0; i < maxLength(words); i++ {
-		line := ""
+		var line strings.Builder
 		for _, word := range words {
 			runes := []rune(word)
 			if i < len(runes) {
 				if string(runes[i]) == "ー" {
-					line += "｜"
+					line.WriteString("｜")
 				} else {
-					line += string(runes[i])
+					line.WriteString(string(runes[i]))
 				}
 
 			} else {
-				line += "　" // 文字がない場合は全角スペースで埋める
+				line.WriteString("　") // 文字がない場合は全角スペースで埋める
 			}
-			line += " " // 行は半角スペースで区切る
+			line.WriteString(" ") // 行は半角スペースで区切る
 		}
-		fmt.Println(line)
+		fmt.Println(line.String())
 	}
 	return nil
 }
