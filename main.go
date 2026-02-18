@@ -24,27 +24,37 @@ func Main() error {
 
 	words := strings.Fields(*input)
 	reverse(words)
+	convertToVertical(words)
 
-	// 縦書きに変換
-	for i := 0; i < maxLength(words); i++ {
-		var line strings.Builder
-		for _, word := range words {
-			runes := []rune(word)
-			if i < len(runes) {
-				if string(runes[i]) == "ー" {
-					line.WriteString("｜")
-				} else {
-					line.WriteString(string(runes[i]))
-				}
-
-			} else {
-				line.WriteString("　") // 文字がない場合は全角スペースで埋める
-			}
-			line.WriteString(" ") // 行は半角スペースで区切る
-		}
-		fmt.Println(line.String())
-	}
 	return nil
+}
+
+func convertToVertical(words []string) {
+	for i := 0; i < maxLength(words); i++ {
+		line := buildVerticalLine(words, i)
+		fmt.Println(line)
+	}
+}
+
+func buildVerticalLine(words []string, lineIndex int) string {
+	var line strings.Builder
+	for _, word := range words {
+		runes := []rune(word)
+		if lineIndex < len(runes) {
+			line.WriteString(convertProlongedSoundMark(runes[lineIndex]))
+		} else {
+			line.WriteString("　") // 文字がない場合は全角スペースで埋める
+		}
+		line.WriteString(" ") // 行は半角スペースで区切る
+	}
+	return line.String()
+}
+
+func convertProlongedSoundMark(r rune) string {
+	if r == 'ー' {
+		return "｜"
+	}
+	return string(r)
 }
 
 func maxLength(words []string) int {
