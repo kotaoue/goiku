@@ -1,28 +1,42 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/spf13/cobra"
+)
+
+var (
+	input string
 )
 
 func main() {
-	if err := Main(); err != nil {
-		log.Fatal(err)
+	rootCmd := &cobra.Command{
+		Use:   "goiku",
+		Short: "HAIKU maker - 俳句を縦書き風に表示します",
+		Long: `goiku は俳句を縦書き風に表示するツールです。
+スペースで区切られた単語を縦書き風に変換して出力します。
+
+例:
+  goiku --input "うどん食べ ステーキ食べて 寿司食べる"`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return run()
+		},
+	}
+
+	// TODO: I want auto-generation mode.
+	rootCmd.Flags().StringVarP(&input, "input", "i", "うどん食べ ステーキ食べて 寿司食べる", "縦書き風に変換する文字列")
+
+	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
-	os.Exit(0)
 }
 
-func Main() error {
-	// TODO: I want auto-generation mode.
-	input := flag.String("input", "うどん食べ ステーキ食べて 寿司食べる", "string to be change the vertically")
-	flag.Parse()
-
-	words := strings.Fields(*input)
+func run() error {
+	words := strings.Fields(input)
 	reverse(words)
 	convertToVertical(words)
 
